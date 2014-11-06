@@ -25,7 +25,7 @@ for i=1:10,
     validateInput = foldInput(i:10:end,:);
     validateOutput = foldOutput(i:10:end);    
     
-    net = optimise(trainInput, trainOutput, validateInput, validateOutput);
+    net = optimiseOneLayer(trainInput, trainOutput, validateInput, validateOutput);
 
     % Update the confusion matrix with the test data for this fold.
     confusedMatrix.update(net, testInput, testOutput);

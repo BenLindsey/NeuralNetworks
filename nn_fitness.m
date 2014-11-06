@@ -1,5 +1,5 @@
 function [ fit ] = nn_fitness( args, trainingInput, trainingOutput, validatingInput, validatingOutput )
-    if args(2) > 0
+    if length(args) > 2 && args(2) > 0
         net = feedforwardnet([args(1), args(2)]);
     else
         net = feedforwardnet([args(1)]);
@@ -12,6 +12,6 @@ function [ fit ] = nn_fitness( args, trainingInput, trainingOutput, validatingIn
     matrix.update(net, validatingInput, validatingOutput);
     fit = 1 - matrix.getAccuracy();
     
-    disp([num2str(args(1)), ' ', num2str(args(2)), ' -> ', num2str(fit)]);
+    disp([num2str(args(1)), ' -> ', num2str(fit)]);
 end
 
