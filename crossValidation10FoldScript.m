@@ -4,20 +4,36 @@ resultD=zeros(floor(length(y)/10),10);
 confusedMatrix = confusionmatrix();
 
 for i=1:10,
-    
-    % Remove the current 10% of the input and output.
+    % Remove 10% of x to form the 9fold data
     foldInput = x;
     foldInput(i:10:end,:) = [];
-    testInput = x(i:10:end,:);
     
     foldOutput = y;
     foldOutput(i:10:end) = [];
-    testOutput = y(i:10:end);
         
-    [tI, tO] = ANNdata(foldInput, foldOutput);    
-    net = feedforwardnet([5]); 
+    % Use the other 10% of x for test data
+    testInput = x(i:10:end,:);
+    testOutput = y(i:10:end);
+    
+    % Split the 9fold data into training and validating
+    trainInput = foldInput;
+    trainInput(i:10:end,:) = [];
+    
+    trainOutput = y;
+    trainOutput(i:10:end) = [];
+    
+    validateInput = foldInput(i:10:end,:);
+    validateOutput = foldOutput(i:10:end);
+    
+    % Convert training data into NN format      
+    [tI, tO] = ANNdata(trainInput, trainOutput);   
+    
+    net = feedforwardnet([50, 50], 'trainscg'); 
     net = configure(net, tI, tO);
-    net.trainParam.epochs = 100;
+    net.trainParam.epochs = 1000;
+    net.trainParam.max_fail = 10;
+    net.trainParam.min_grad = net.trainParam.min_grad / 10;
+    net.trainParam.sigma = net.trainParam.sigma * 10;
     net = train(net, tI, tO);
     
     % Update the confusion matrix with the test data for this fold.
