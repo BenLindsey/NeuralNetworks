@@ -13,11 +13,15 @@ for i=1:10,
     foldOutput = y;
     foldOutput(i:10:end) = [];
     testOutput = y(i:10:end);
-    
-    f = forest(foldInput, foldOutput);
+        
+    [tI, tO] = ANNdata(foldInput, foldOutput);    
+    net = feedforwardnet([5]); 
+    configure(net, tI, tO);
+    net.trainParam.epochs = 10;
+    train(net, tI, tO);
     
     % Update the confusion matrix with the test data for this fold.
-    confusedMatrix.update(f, testInput, testOutput);
+    confusedMatrix.update(net, testInput, testOutput);
 end
 
 % Get the average statistics from the confusion matrix.

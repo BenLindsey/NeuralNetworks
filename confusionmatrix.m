@@ -11,14 +11,13 @@ classdef confusionmatrix < handle
             this.Matrix = ones(6, 6);
         end
         
-        function update(this, forest, inputs, outputs)
+        function update(this, net, inputs, outputs)
             % Test the forest on each entry in the training data, then
             % increment the corresponding element in the matrix.
             for row=1:length(inputs),
-
-                emotion = forest.getEmotionViaBfs(inputs(row,:));
-                actualEmotion = outputs(row);
-
+                [i, o] = ANNdata(inputs(row, :), outputs(row));
+                emotion = sim(net, i);
+                actualEmotion = o;
                 % TODO: Check that this case can be ignored.
                 if emotion ~= -1
                     this.Matrix(actualEmotion, emotion) = ...
