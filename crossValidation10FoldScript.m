@@ -17,8 +17,8 @@ for i=1:10,
     [tI, tO] = ANNdata(foldInput, foldOutput);    
     net = feedforwardnet([5]); 
     net = configure(net, tI, tO);
-    net.trainParam.epochs = 10;
-    train(net, tI, tO);
+    net.trainParam.epochs = 100;
+    net = train(net, tI, tO);
     
     % Update the confusion matrix with the test data for this fold.
     confusedMatrix.update(net, testInput, testOutput);
