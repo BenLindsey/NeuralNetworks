@@ -19,7 +19,7 @@ for i=1:10,
     trainInput = foldInput;
     trainInput(i:10:end,:) = [];
     
-    trainOutput = y;
+    trainOutput = foldOutput;
     trainOutput(i:10:end) = [];
     
     validateInput = foldInput(i:10:end,:);
