@@ -23,17 +23,10 @@ for i=1:10,
     trainOutput(i:10:end) = [];
     
     validateInput = foldInput(i:10:end,:);
-    validateOutput = foldOutput(i:10:end);
+    validateOutput = foldOutput(i:10:end);    
     
-    % Convert training data into NN format      
-    [tI, tO] = ANNdata(trainInput, trainOutput);   
+    net = optimise(trainInput, trainOutput, validateInput, validateOutput);
 
-    builder    = @(i) feedforwardnet([10*i, 10*i], 'trainscg');
-    configurer = @(i, net) configure(net, tI, tO);
-    trainer    = @(i, net) train(net, tI, tO);
-    
-    net = optimise(builder, configurer, trainer, 5, validateInput, validateOutput);
-    
     % Update the confusion matrix with the test data for this fold.
     confusedMatrix.update(net, testInput, testOutput);
 end
