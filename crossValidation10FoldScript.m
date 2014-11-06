@@ -27,14 +27,12 @@ for i=1:10,
     
     % Convert training data into NN format      
     [tI, tO] = ANNdata(trainInput, trainOutput);   
+
+    builder    = @(i) feedforwardnet([10*i, 10*i], 'trainscg');
+    configurer = @(i, net) configure(net, tI, tO);
+    trainer    = @(i, net) train(net, tI, tO);
     
-    net = feedforwardnet([50, 50], 'trainscg'); 
-    net = configure(net, tI, tO);
-    net.trainParam.epochs = 1000;
-    net.trainParam.max_fail = 10;
-    net.trainParam.min_grad = net.trainParam.min_grad / 10;
-    net.trainParam.sigma = net.trainParam.sigma * 10;
-    net = train(net, tI, tO);
+    net = optimise(builder, configurer, trainer, 5, validateInput, validateOutput);
     
     % Update the confusion matrix with the test data for this fold.
     confusedMatrix.update(net, testInput, testOutput);
