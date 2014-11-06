@@ -16,8 +16,8 @@ classdef confusionmatrix < handle
             % increment the corresponding element in the matrix.
             for row=1:length(inputs),
                 [i, o] = ANNdata(inputs(row, :), outputs(row));
-                emotion = sim(net, i);
-                actualEmotion = o;
+                emotion = testANN(net, i);
+                actualEmotion = outputs(row);
                 % TODO: Check that this case can be ignored.
                 if emotion ~= -1
                     this.Matrix(actualEmotion, emotion) = ...

@@ -16,7 +16,7 @@ for i=1:10,
         
     [tI, tO] = ANNdata(foldInput, foldOutput);    
     net = feedforwardnet([5]); 
-    configure(net, tI, tO);
+    net = configure(net, tI, tO);
     net.trainParam.epochs = 10;
     train(net, tI, tO);
     
