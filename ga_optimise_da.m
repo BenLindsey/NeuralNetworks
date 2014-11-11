@@ -1,4 +1,4 @@
-function [ net ] = optimise(trainingInput, trainingOutput, validatingInput, validatingOutput) 
+function [ net ] = ga_optimise_da(trainingInput, trainingOutput, validatingInput, validatingOutput) 
     % OPTIMISATION ARGUMENTS:
     % [ NeuronsInFirstLayer, NeuronsInSecondLayer ]
     nargs = 2;    % Number of arguments
