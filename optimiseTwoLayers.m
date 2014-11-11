@@ -2,11 +2,11 @@ function [ net ] = optimise(trainingInput, trainingOutput, validatingInput, vali
     % OPTIMISATION ARGUMENTS:
     % [ NeuronsInFirstLayer, NeuronsInSecondLayer ]
     nargs = 2;    % Number of arguments
-    LB = [1 1];   % Lower bounds for arguments
+    LB = [1 0];   % Lower bounds for arguments
     UB = [10 10]; % Upper bounds for arguments
     IC = [1, 2];  % Integer constraints (by index of OPTIMISATION ARGUMENTS)
-    options = gaoptimset; % Default options
-    %options = gaoptimset('TimeLimit', 2); % Timelimit(seconds) constraint
+    %options = gaoptimset; % Default options
+    options = gaoptimset('TimeLimit', 2, 'UseParallel', true, 'Vectorized', 'off'); % Timelimit(seconds) constraint
                                           % ONLY checked after 1st gen.
                                          
     % Training data
