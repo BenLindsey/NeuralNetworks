@@ -1,8 +1,8 @@
 function [ fit ] = nn_fitness( args, trainingInput, trainingOutput, validatingInput, validatingOutput )
     if length(args) > 1 && args(2) > 0
-        net = feedforwardnet([args(1), args(2)]);
+        net = feedforwardnet([args(1), args(2)], 'trainrp');
     else
-        net = feedforwardnet([args(1)]);
+        net = feedforwardnet([args(1)], 'trainrp');
     end
     
     net = configure(net, trainingInput, trainingOutput);
