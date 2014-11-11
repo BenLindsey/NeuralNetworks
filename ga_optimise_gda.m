@@ -6,7 +6,10 @@ function [ net ] = ga_optimise_gda(trainingInput, trainingOutput, validatingInpu
     UB = [50 50 1 2 1]; % Upper bounds for arguments
     IC = [1, 2];  % Integer constraints (by index of OPTIMISATION ARGUMENTS)
     %options = gaoptimset; % Default options
-    options = gaoptimset('TimeLimit', 1800, 'UseParallel', true, 'Vectorized', 'off'); % Timelimit(seconds) constraint
+    options = gaoptimset('UseParallel', true, ...
+                         'Vectorized', 'off', 'PopulationSize', 50, ... 
+                         'Generations', 50, ...
+                         'PlotFcns', @gaplotbestf); % Timelimit(seconds) constraint
                                           % ONLY checked after 1st gen.
                                          
     % Training data
