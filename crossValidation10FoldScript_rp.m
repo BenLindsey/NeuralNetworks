@@ -23,16 +23,17 @@ for i=1:10,
     trainOutput(i:10:end) = [];
     
     validateInput = foldInput(i:10:end,:);
-    validateOutput = foldOutput(i:10:end);    
+    validateOutput = foldOutput(i:10:end);
     
     [tI, tO] = ANNdata(trainInput, trainOutput);
     
-    net = feedforwardnet([25, 75], 'traingda');
-    net.trainParam.lr     = 0.1574;
-    net.trainParam.lr_inc = 1.6648;
-    net.trainParam.lr_dec = 0.0256;
-    net = configure(net, tI , tO);    
-    net = train(net, tI, tO);
+    % TODO BUILD NET FROM BEST ARGS net = optimiseTwoLayers(trainInput, trainOutput, validateInput, validateOutput);
+    %net = ga_optimise_rp(trainInput, trainOutput, validateInput, validateOutput);
+    net = feedforwardnet([44, 18], 'trainrp');
+    net.trainParam.delt_inc = 1.1479;
+    net.trainParam.delt_dec = 0.6660;
+    net = configure(net, tI, tO);
+    [net, tr] = train(net, tI, tO);
 
     % Update the confusion matrix with the test data for this fold.
     confusedMatrix.update(net, testInput, testOutput);
