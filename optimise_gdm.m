@@ -19,4 +19,4 @@ trainOutput(i:10:end) = [];
 validateInput = foldInput(i:10:end,:);
 validateOutput = foldOutput(i:10:end);    
 
-ga_optimise_gda(trainInput, trainOutput, validateInput, validateOutput);
+ga_optimise_gdm(trainInput, trainOutput, validateInput, validateOutput);
