@@ -3,10 +3,13 @@ function [ net ] = ga_optimise_gdm(trainingInput, trainingOutput, validatingInpu
     % [ NeuronsInFirstLayer, NeuronsInSecondLayer, LearningRate, Momentum ]
     nargs = 4;    % Number of arguments
     LB = [1 0 0 0];   % Lower bounds for arguments
-    UB = [100 100 1 1]; % Upper bounds for arguments
+    UB = [100 0 1 1]; % Upper bounds for arguments
     IC = [1, 2];  % Integer constraints (by index of OPTIMISATION ARGUMENTS)
     %options = gaoptimset; % Default options
-    options = gaoptimset('TimeLimit', 50, 'UseParallel', true, 'Vectorized', 'off'); % Timelimit(seconds) constraint
+    options = gaoptimset('TimeLimit', 50, 'UseParallel', true, 'Vectorized', 'off', ...
+                         'PopulationSize', 50, ... 
+                         'Generations', 50, ...
+                         'PlotFcns', @gaplotbestf); % Timelimit(seconds) constraint
                                           % ONLY checked after 1st gen.
                                          
     % Training data
