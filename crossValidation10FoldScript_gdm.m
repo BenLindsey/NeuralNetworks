@@ -33,9 +33,17 @@ for i=1:10,
     %net = feedforwardnet([95, 17], 'traingdm');
     %net.trainParam.lr = 0.5706;
     %net.trainParam.mc = 0.2691;
-    net = feedforwardnet([30, 33], 'traingdm');
-    net.trainParam.lr = 0.7281;
-    net.trainParam.mc = 0.4911;
+    
+    % Good values:
+    %net = feedforwardnet([30, 33], 'traingdm');
+    %net.trainParam.lr = 0.7281;
+    %net.trainParam.mc = 0.4911;
+    
+    % One layer:
+    net = feedforwardnet([36], 'traingdm');
+    net.trainParam.lr = 0.9824;
+    net.trainParam.mc = 0.5718;
+    
     net = configure(net, tI , tO);    
     net = train(net, tI, tO);
 
