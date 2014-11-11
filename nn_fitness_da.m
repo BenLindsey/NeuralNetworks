@@ -6,6 +6,7 @@ function [ fit ] = nn_fitness( args, trainingInput, trainingOutput, validatingIn
     end
     
     net = configure(net, trainingInput, trainingOutput);
+    
     net = train(net, trainingInput, trainingOutput);
     
     matrix = confusionmatrix();
