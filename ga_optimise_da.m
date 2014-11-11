@@ -13,7 +13,7 @@ function [ net ] = ga_optimise_da(trainingInput, trainingOutput, validatingInput
     [tI, tO] = ANNdata(trainingInput, trainingOutput);  
     
     % Calculate fit for the given optimisation arguments. Lower is better.
-    FitnessFunction = @(args) nn_fitness(args, ...
+    FitnessFunction = @(args) nn_fitness_da(args, ...
         tI, tO, validatingInput, validatingOutput);
     
     % Result of genetic algorithm search, where x is discovered values
