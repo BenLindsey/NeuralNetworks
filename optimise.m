@@ -19,4 +19,4 @@ trainOutput(i:10:end) = [];
 validateInput = foldInput(i:10:end,:);
 validateOutput = foldOutput(i:10:end);    
 
-net = ga_optimise_da(trainInput, trainOutput, validateInput, validateOutput);
+net = ga_optimise_gda(trainInput, trainOutput, validateInput, validateOutput);
