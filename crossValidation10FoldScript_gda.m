@@ -27,10 +27,10 @@ for i=1:10,
     
     [tI, tO] = ANNdata(trainInput, trainOutput);
     
-    net = feedforwardnet([25, 75], 'traingda');
-    net.trainParam.lr     = 0.1574;
-    net.trainParam.lr_inc = 1.6648;
-    net.trainParam.lr_dec = 0.0256;
+    net = feedforwardnet([21], 'traingda');
+    net.trainParam.lr     = 0.5981;
+    net.trainParam.lr_inc = 1.5734;
+    net.trainParam.lr_dec = 0.0886;
     net = configure(net, tI , tO);    
     net = train(net, tI, tO);
 
