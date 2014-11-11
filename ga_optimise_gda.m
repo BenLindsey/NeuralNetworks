@@ -3,10 +3,10 @@ function [ net ] = ga_optimise_gda(trainingInput, trainingOutput, validatingInpu
     % [ NeuronsInFirstLayer, NeuronsInSecondLayer, LearningRate, LearningInc, LearningDec ]
     nargs = 5;    % Number of arguments
     LB = [1 0 0 1 0];   % Lower bounds for arguments
-    UB = [100 100 1 2 1]; % Upper bounds for arguments
+    UB = [50 50 1 2 1]; % Upper bounds for arguments
     IC = [1, 2];  % Integer constraints (by index of OPTIMISATION ARGUMENTS)
     %options = gaoptimset; % Default options
-    options = gaoptimset('TimeLimit', 600, 'UseParallel', true, 'Vectorized', 'off'); % Timelimit(seconds) constraint
+    options = gaoptimset('TimeLimit', 1800, 'UseParallel', true, 'Vectorized', 'off'); % Timelimit(seconds) constraint
                                           % ONLY checked after 1st gen.
                                          
     % Training data
