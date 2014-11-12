@@ -27,7 +27,7 @@ classdef confusionmatrix < handle
         end
         
         % Functions for part III, these functions calculate the basic
-        % properties from the slides:
+        % properties from the slides;
         
         % Return the accuracy of the matrix.
         function accuracy = getAccuracy(this)
