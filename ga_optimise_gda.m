@@ -1,4 +1,4 @@
-function [ net ] = ga_optimise_gda(trainingInput, trainingOutput, validatingInput, validatingOutput) 
+function [ args ] = ga_optimise_gda(trainingInput, trainingOutput, validatingInput, validatingOutput) 
     % OPTIMISATION ARGUMENTS:
     % [ NeuronsInFirstLayer, NeuronsInSecondLayer, LearningRate, LearningInc, LearningDec ]
     nargs = 6;    % Number of arguments
@@ -8,7 +8,7 @@ function [ net ] = ga_optimise_gda(trainingInput, trainingOutput, validatingInpu
     %options = gaoptimset; % Default options
     options = gaoptimset('UseParallel', true, ...
                          'Vectorized', 'off', 'PopulationSize', 50, ... 
-                         'Generations', 50, ...
+                         'Generations', 15, ...
                          'PlotFcns', @gaplotbestf); % Timelimit(seconds) constraint
                                           % ONLY checked after 1st gen.
                                          
@@ -21,10 +21,10 @@ function [ net ] = ga_optimise_gda(trainingInput, trainingOutput, validatingInpu
     
     % Result of genetic algorithm search, where x is discovered values
     % for OPTIMISATION ARGUMENTS
-    [x, fval] = ga(FitnessFunction, nargs, [], [], [], [], ...
+    [args, fval] = ga(FitnessFunction, nargs, [], [], [], [], ...
                     LB, UB, [], IC, options)
                 
     disp('Using values:');
-    disp(x);
+    disp(args);
 end
 

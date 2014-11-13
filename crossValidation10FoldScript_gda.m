@@ -27,10 +27,18 @@ for i=1:10,
     
     [tI, tO] = ANNdata(trainInput, trainOutput);
     
-    net = feedforwardnet([20], 'traingda');
-    net.trainParam.lr     = 0.2146;
-    net.trainParam.lr_inc = 1.4970;
-    net.trainParam.lr_dec = 0.0448;
+    args = ga_optimise_gda(trainInput, trainOutput, validateInput, validateOutput);
+    
+    opti(i, :) = args;
+    
+    if args(6) > 0
+        net = feedforwardnet([args(1), args(2)], 'traingda');
+    else
+        net = feedforwardnet([args(1)], 'traingda');
+    end
+    net.trainParam.lr     = args(3);
+    net.trainParam.lr_inc = args(4);
+    net.trainParam.lr_dec = args(5);
     net = configure(net, tI , tO);    
     net = train(net, tI, tO);
 
