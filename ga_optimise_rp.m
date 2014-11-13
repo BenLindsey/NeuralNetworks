@@ -1,15 +1,16 @@
 function [ net ] = ga_optimise_rp(trainingInput, trainingOutput, validatingInput, validatingOutput) 
     % OPTIMISATION ARGUMENTS:
     % [ NeuronsInFirstLayer, NeuronsInSecondLayer, delta_inc, delta_dec ]
-    nargs = 4;           % Number of arguments
-    LB = [1, 0, 1, 0];   % Lower bounds for arguments
-    UB = [100, 0, 2, 1]; % Upper bounds for arguments
+    nargs = 5;           % Number of arguments
+    LB = [1,   0,   1,   1, 0]; % Lower bounds for arguments
+    UB = [100, 100, 100, 2, 1]; % Upper bounds for arguments
     %LB = [20, 20, 1.2, 0.3];
     %UB = [30, 30, 1.5, 0.6];
-    IC = [1, 2];  % Integer constraints (by index of OPTIMISATION ARGUMENTS)
+    IC = [1, 2, 3];  % Integer constraints (by index of OPTIMISATION ARGUMENTS)
     %options = gaoptimset; % Default options
     options = gaoptimset('UseParallel', true, 'Vectorized', 'off', ...
-        'TimeLimit', 2, 'PlotFcns', @gaplotbestf); % ONLY checked after 1st gen.
+        'TimeLimit', 2, 'PlotFcns', {@gaplotbestf, @gaplotbestindiv}, ...
+        'Generations', 10, 'PopulationSize', 50);
     
     % Training data
     [tI, tO] = ANNdata(trainingInput, trainingOutput);  
