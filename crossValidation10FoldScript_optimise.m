@@ -64,7 +64,7 @@ for fold=1:10,
             
             % Find the performance of the network using the validation
             % data.
-            innerConfusionMatrix = confusionMatrix();
+            innerConfusionMatrix = confusionmatrix();
             innerConfusionMatrix.update(net, validateInput, validateOutput);
         end
         
