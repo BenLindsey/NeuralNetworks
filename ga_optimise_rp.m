@@ -1,6 +1,6 @@
-function args = ga_optimise_rp(trainingInput, trainingOutput, validatingInput, validatingOutput) 
+function args = ga_optimise_rp(trainingInput, trainingOutput, validatingInput, validatingOutput)
     % OPTIMISATION ARGUMENTS:
-    % [ NeuronsInFirstLayer, NeuronsInSecondLayer, delta_inc, delta_dec, LayerCount ]
+    % [ NeuronsInFirstLayer, NeuronsInSecondLayer, delta_inc, delta_dec, UseSecondLayer ]
     nargs = 5;           % Number of arguments
     LB = [1,   1,   1, 0, 0]; % Lower bounds for arguments
     UB = [100, 100, 2, 1, 1]; % Upper bounds for arguments

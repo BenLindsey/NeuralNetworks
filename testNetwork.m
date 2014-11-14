@@ -1,23 +1,23 @@
-% 35 neurons, inc = 1.4537, dec = 0.31498 -> Error rate = 0.14286
+% 25 neurons, inc = 1.1964, dec = 0.23687 -> Error rate = 0.10989
 trainingInput = x;
 trainingInput(1:10:end, :) = [];
 trainingOutput = y;
 trainingOutput(1:10:end, :) = [];
+
+testInput = x(1:10:end, :);
+testOutput = y(1:10:end, :);
 [tI, tO] = ANNdata(trainingInput, trainingOutput);
+[tstI, tstO] = ANNdata(testInput, testOutput);
 
-validatingInput = x(1:10:end, :);
-validatingOutput = y(1:10:end, :);
-[vI, vO] = ANNdata(validatingInput, validatingOutput);
-
-net = feedforwardnet([35], 'trainrp');
+net = feedforwardnet([25], 'trainrp');
 net = configure(net, tI, tO);
-net.trainParam.delt_inc = 1.4537;
-net.trainParam.delt_dec = 0.31498;
+net.trainParam.delt_inc = 1.1964;
+net.trainParam.delt_dec = 0.23687;
 
-% Train with the training set, use the validation set to avoid
-% overfitting and do not use a test set.
-totalInput = [tI, vI];
-totalOutput = [tO, vO];
+% Train with the training and validation set, use the test set to avoid
+% overfitting.
+totalInput = [tI, tstI];
+totalOutput = [tO, tstO];
 net.divideFcn = 'divideind';
 net.divideParam.trainInd = 1:size(tI, 2);
 net.divideParam.valInd = (size(tI, 2) + 1):size(totalInput, 2);
@@ -26,5 +26,6 @@ net.divideParam.testInd = [];
 net = train(net, totalInput, totalOutput);
 
 matrix = confusionmatrix();
-matrix.updateWithoutConvert(net, vI, vO);
-matrix.getAccuracy()
+matrix.updateWithoutConvert(net, tstI, tstO);
+disp(matrix.Matrix);
+disp(matrix.getAccuracy);

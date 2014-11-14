@@ -22,23 +22,37 @@ for i=1:10,
     trainOutput = foldOutput;
     trainOutput(i:10:end) = [];
     
+    % NOTE: Validatation data should probably only depend on the fold data,
+    % not the fold number (i) as well. But this shouldn't make a
+    % difference.
     validateInput = foldInput(i:10:end,:);
     validateOutput = foldOutput(i:10:end);
-    
-    [tI, tO] = ANNdata(trainInput, trainOutput);
     
     args = ga_optimise_rp(trainInput, trainOutput, validateInput, validateOutput);
     
     opti(i, :) = args;
     
+    % Setup a network with the optimum parameters.
     if (args(5) > 0)
         net = feedforwardnet([args(1), args(2)], 'trainrp');
     else
         net = feedforwardnet(args(1), 'trainrp');
     end
+    [tI, tO] = ANNdata(foldInput, foldOutput);
+    net = configure(net, tI, tO);
     net.trainParam.delt_inc = args(3);
     net.trainParam.delt_dec = args(4);
-    net = configure(net, tI, tO);
+    
+    % Train the network with the train data, stop early using the
+    % validation data to prevent overfitting. But do not use the test data
+    % yet.
+    valInd = i:10:size(tI, 2);
+    trainInd = (1:size(tI, 2));
+    trainInd(valInd) = [];
+    net.divideFcn = 'divideind';
+    net.divideParam.trainInd = trainInd;
+    net.divideParam.valInd = valInd;
+    net.divideParam.testInd = [];
     net = train(net, tI, tO);
 
     % Update the confusion matrix with the test data for this fold.
