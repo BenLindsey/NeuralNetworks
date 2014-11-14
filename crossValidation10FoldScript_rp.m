@@ -1,5 +1,6 @@
-resultB=zeros(floor(length(y)/10),10);
-resultD=zeros(floor(length(y)/10),10);
+% Use the same random seed each time the weights are initialised so results
+% are reproducible.
+rng(1001, 'twister');
 
 confusedMatrix = confusionmatrix();
 
@@ -29,7 +30,6 @@ for i=1:10,
     validateOutput = foldOutput(i:10:end);
     
     args = ga_optimise_rp(trainInput, trainOutput, validateInput, validateOutput);
-    
     opti(i, :) = args;
     
     % Setup a network with the optimum parameters.
@@ -58,6 +58,9 @@ for i=1:10,
     % Update the confusion matrix with the test data for this fold.
     confusedMatrix.update(net, testInput, testOutput);
 end
+
+fprintf('Optimum parameters:\n');
+disp(opti);
 
 % Get the average statistics from the confusion matrix.
 recallRates = zeros(1, 6);

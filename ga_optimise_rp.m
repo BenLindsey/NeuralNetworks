@@ -22,6 +22,6 @@ function args = ga_optimise_rp(trainingInput, trainingOutput, validatingInput, v
     % for OPTIMISATION ARGUMENTS
     [args, fval] = ga(FitnessFunction, nargs, [], [], [], [], ...
                     LB, UB, [], IC, options);
-    disp('Using values:');
+    disp('Found optimum parameters:');
     disp(args);
 end
