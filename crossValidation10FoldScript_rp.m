@@ -27,13 +27,19 @@ for i=1:10,
     
     [tI, tO] = ANNdata(trainInput, trainOutput);
     
-    % TODO BUILD NET FROM BEST ARGS net = optimiseTwoLayers(trainInput, trainOutput, validateInput, validateOutput);
-    %net = ga_optimise_rp(trainInput, trainOutput, validateInput, validateOutput);
-    net = feedforwardnet([44, 18], 'trainrp');
-    net.trainParam.delt_inc = 1.1479;
-    net.trainParam.delt_dec = 0.6660;
+    args = ga_optimise_rp(trainInput, trainOutput, validateInput, validateOutput);
+    
+    opti(i, :) = args;
+    
+    if (args(5) > 0)
+        net = feedforwardnet([args(1), args(2)], 'trainrp');
+    else
+        net = feedforwardnet(args(1), 'trainrp');
+    end
+    net.trainParam.delt_inc = args(3);
+    net.trainParam.delt_dec = args(4);
     net = configure(net, tI, tO);
-    [net, tr] = train(net, tI, tO);
+    net = train(net, tI, tO);
 
     % Update the confusion matrix with the test data for this fold.
     confusedMatrix.update(net, testInput, testOutput);

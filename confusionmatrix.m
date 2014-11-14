@@ -8,7 +8,7 @@ classdef confusionmatrix < handle
         function this = confusionmatrix()
 
             % Initialise the confusion matrix.
-            this.Matrix = ones(6, 6);
+            this.Matrix = zeros(6, 6);
         end
         
         function update(this, net, inputs, outputs)
@@ -23,6 +23,17 @@ classdef confusionmatrix < handle
                     this.Matrix(actualEmotion, emotion) = ...
                         this.Matrix(actualEmotion, emotion) + 1;
                 end
+            end
+        end
+        
+        % Identical to update, but assumes that ANNdata has already been
+        % called on the parameters.
+        function updateWithoutConvert(this, net, inputs, outputs)
+            for col=1:size(inputs, 2),
+                emotion = testANN(net, inputs(:, col));
+                actualEmotion = find(outputs(:, col), 1);
+                this.Matrix(actualEmotion, emotion) = ...
+                    this.Matrix(actualEmotion, emotion) + 1;
             end
         end
         
