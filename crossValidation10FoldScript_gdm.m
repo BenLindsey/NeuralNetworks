@@ -1,5 +1,6 @@
-resultB=zeros(floor(length(y)/10),10);
-resultD=zeros(floor(length(y)/10),10);
+% Use the same random seed each time the weights are initialised so results
+% are reproducible.
+rng(1001, 'twister');
 
 confusedMatrix = confusionmatrix();
 
@@ -27,21 +28,39 @@ for i=1:10,
     
     [tI, tO] = ANNdata(trainInput, trainOutput);
     
-    %net = feedforwardnet([55, 71], 'traingdm');
-    %net.trainParam.lr = 0.2909;
-    %net.trainParam.mc = 0.3457;
-    %net = feedforwardnet([95, 17], 'traingdm');
-    %net.trainParam.lr = 0.5706;
-    %net.trainParam.mc = 0.2691;
-    net = feedforwardnet([30, 33], 'traingdm');
-    net.trainParam.lr = 0.7281;
-    net.trainParam.mc = 0.4911;
-    net = configure(net, tI , tO);    
+    args = ga_optimise_gdm(trainInput, trainOutput, validateInput, validateOutput);
+    
+    opti(i, :) = args;
+    
+    if args(4) > 0
+        net = feedforwardnet([args(1), args(2)], 'traingdm');
+    else
+        net = feedforwardnet([args(1)], 'traingdm');
+    end
+    
+    net.trainParam.lr = args(3);
+    net.trainParam.mc = args(4);
+    net = configure(net, tI , tO);
+    
+    % Train the network with the train data, stop early using the
+    % validation data to prevent overfitting. But do not use the test data
+    % yet.
+    valInd = i:10:size(tI, 2);
+    trainInd = (1:size(tI, 2));
+    trainInd(valInd) = [];
+    net.divideFcn = 'divideind';
+    net.divideParam.trainInd = trainInd;
+    net.divideParam.valInd = valInd;
+    net.divideParam.testInd = [];
+    
     net = train(net, tI, tO);
 
     % Update the confusion matrix with the test data for this fold.
     confusedMatrix.update(net, testInput, testOutput);
 end
+
+fprintf('Optimum parameters:\n');
+disp(opti);
 
 % Get the average statistics from the confusion matrix.
 recallRates = zeros(1, 6);
