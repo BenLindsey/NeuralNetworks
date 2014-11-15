@@ -1,5 +1,5 @@
 function [ fit ] = nn_fitness_gda( args, trainingInput, trainingOutput, validatingInput, validatingOutput )
-    if args(2) > 0
+    if args(6) > 0
         net = feedforwardnet([args(1), args(2)], 'traingda');
     else
         net = feedforwardnet([args(1)], 'traingda');
@@ -17,8 +17,14 @@ function [ fit ] = nn_fitness_gda( args, trainingInput, trainingOutput, validati
     matrix.update(net, validatingInput, validatingOutput);
     fit = 1 - matrix.getAccuracy();
 
+    if args(6) > 0
     disp(['Neurons:', num2str(args(1)), '|', num2str(args(2)), ...
           ' Lr:', num2str(args(3)), ' Lr_inc:', num2str(args(4)), ...
           ' Lr_dec:', num2str(args(5)),' -> ', num2str(fit)]);
+    else
+    disp(['Neurons:', num2str(args(1)), ...
+          ' Lr:', num2str(args(3)), ' Lr_inc:', num2str(args(4)), ...
+          ' Lr_dec:', num2str(args(5)),' -> ', num2str(fit)]);
+    end
 end
 

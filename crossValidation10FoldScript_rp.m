@@ -1,5 +1,6 @@
-resultB=zeros(floor(length(y)/10),10);
-resultD=zeros(floor(length(y)/10),10);
+% Use the same random seed each time the weights are initialised so results
+% are reproducible.
+rng(1001, 'twister');
 
 confusedMatrix = confusionmatrix();
 
@@ -22,22 +23,44 @@ for i=1:10,
     trainOutput = foldOutput;
     trainOutput(i:10:end) = [];
     
+    % NOTE: Validatation data should probably only depend on the fold data,
+    % not the fold number (i) as well. But this shouldn't make a
+    % difference.
     validateInput = foldInput(i:10:end,:);
     validateOutput = foldOutput(i:10:end);
     
-    [tI, tO] = ANNdata(trainInput, trainOutput);
+    args = ga_optimise_rp(trainInput, trainOutput, validateInput, validateOutput);
+    opti(i, :) = args;
     
-    % TODO BUILD NET FROM BEST ARGS net = optimiseTwoLayers(trainInput, trainOutput, validateInput, validateOutput);
-    %net = ga_optimise_rp(trainInput, trainOutput, validateInput, validateOutput);
-    net = feedforwardnet([44, 18], 'trainrp');
-    net.trainParam.delt_inc = 1.1479;
-    net.trainParam.delt_dec = 0.6660;
+    % Setup a network with the optimum parameters.
+    if (args(5) > 0)
+        net = feedforwardnet([args(1), args(2)], 'trainrp');
+    else
+        net = feedforwardnet(args(1), 'trainrp');
+    end
+    [tI, tO] = ANNdata(foldInput, foldOutput);
     net = configure(net, tI, tO);
-    [net, tr] = train(net, tI, tO);
+    net.trainParam.delt_inc = args(3);
+    net.trainParam.delt_dec = args(4);
+    
+    % Train the network with the train data, stop early using the
+    % validation data to prevent overfitting. But do not use the test data
+    % yet.
+    valInd = i:10:size(tI, 2);
+    trainInd = (1:size(tI, 2));
+    trainInd(valInd) = [];
+    net.divideFcn = 'divideind';
+    net.divideParam.trainInd = trainInd;
+    net.divideParam.valInd = valInd;
+    net.divideParam.testInd = [];
+    net = train(net, tI, tO);
 
     % Update the confusion matrix with the test data for this fold.
     confusedMatrix.update(net, testInput, testOutput);
 end
+
+fprintf('Optimum parameters:\n');
+disp(opti);
 
 % Get the average statistics from the confusion matrix.
 recallRates = zeros(1, 6);
