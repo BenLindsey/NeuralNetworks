@@ -14,16 +14,14 @@ classdef confusionmatrix < handle
         function update(this, net, inputs, outputs)
             % Test the forest on each entry in the training data, then
             % increment the corresponding element in the matrix.
-            for row=1:length(inputs),
-                [i, o] = ANNdata(inputs(row, :), outputs(row));
-                emotion = testANN(net, i);
-                actualEmotion = outputs(row);
-                % TODO: Check that this case can be ignored.
-                if emotion ~= -1
-                    this.Matrix(actualEmotion, emotion) = ...
-                        this.Matrix(actualEmotion, emotion) + 1;
-                end
-            end
+            [i, o] = ANNdata(inputs, outputs);
+            emotion = testANN(net, i);
+            for idx=1:length(emotion)
+                this.Matrix(outputs(idx), emotion(idx)) = ...
+                        this.Matrix(outputs(idx), emotion(idx)) + 1;
+            end        
+            
+
         end
         
         % Identical to update, but assumes that ANNdata has already been
