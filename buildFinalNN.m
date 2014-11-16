@@ -1,5 +1,5 @@
 function [ net ] = buildFinalNN( gd_optiset, gda_optiset, gdm_optiset, rp_optiset, x, y)
-    [gdm_accuracy, gdm_params ] = findBestForTrainingFunction(gdm_optiset, 'traingdm', 0, @assign_gdm, x, y)
+    [gdm_accuracy, gdm_params ] = findBestForTrainingFunction(gdm_optiset, 'traingdm', 5, @assign_gdm, x, y)
     [rp_accuracy, rp_params ] = findBestForTrainingFunction(rp_optiset, 'trainrp', 5, @assign_rp, x, y)
     [gd_accuracy, gd_params ] = findBestForTrainingFunction(gd_optiset, 'traingd', 4, @assign_gd, x, y)
     [gda_accuracy, gda_params ] = findBestForTrainingFunction(gda_optiset, 'traingda', 6, @assign_gda, x, y)
@@ -10,7 +10,7 @@ function [ net ] = buildFinalNN( gd_optiset, gda_optiset, gdm_optiset, rp_optise
     if best == gda_accuracy
     	net = buildNet(1, x, y, gda_params, 6, 'traingda', @assign_gda);
     elseif best == gdm_accuracy
-        net = buildNet(1, x, y, gdm_params, 0, 'traingdm', @assign_gdm);
+        net = buildNet(1, x, y, gdm_params, 5, 'traingdm', @assign_gdm);
     elseif best == rp_accuracy
         net = buildNet(1, x, y, rp_params, 5, 'trainrp', @assign_rp);
     else
@@ -77,8 +77,7 @@ function [ max_accuracy, max_inputs ] = findBestForTrainingFunction( optiset, fu
         return
     end
 
-
-    for j=1:10
+    parfor j=1:10
         confusedMatrix = confusionmatrix();
 
         for i=1:10,
