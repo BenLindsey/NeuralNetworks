@@ -1,25 +1,19 @@
 function [ fit ] = nn_fitness_gda( args, trainingInput, trainingOutput, validatingInput, validatingOutput ) 
-    if length(args) > 4 && args(6) > 0
+    rng(1001, 'twister');
+    if args(6) > 0
         net = feedforwardnet([args(1), args(2)], 'traingda');
     else
         net = feedforwardnet([args(1)], 'traingda');
     end
     
-    if length(args) > 4
-        net.trainParam.lr     = args(3);
-        net.trainParam.lr_inc = args(4);
-        net.trainParam.lr_dec = args(5);
-    else
-        net.trainParam.lr     = args(2);
-        net.trainParam.lr_inc = args(3);
-        net.trainParam.lr_dec = args(4);
-    end
+    net = configure(net, trainingInput, trainingOutput);
+    
+    net.trainParam.lr     = args(3);
+    net.trainParam.lr_inc = args(4);
+    net.trainParam.lr_dec = args(5);
     
     totalInput = [trainingInput, validatingInput];
     totalOutput = [trainingOutput, validatingOutput];
-    
-    net = configure(net, totalInput, totalOutput);
-    
     net.divideFcn = 'divideind';
     net.divideParam.trainInd = 1:size(trainingInput, 2);
     net.divideParam.valInd = (size(trainingInput, 2) + 1):size(totalInput, 2);

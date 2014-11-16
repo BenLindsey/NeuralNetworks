@@ -1,6 +1,3 @@
-% Use the same random seed each time the weights are initialised so results
-% are reproducible.
-
 confusedMatrix = confusionmatrix();
 
 for i=1:10,
