@@ -14,8 +14,7 @@ classdef confusionmatrix < handle
         function update(this, net, inputs, outputs)
             % Test the forest on each entry in the training data, then
             % increment the corresponding element in the matrix.
-            [i, o] = ANNdata(inputs, outputs);
-            emotion = testANN(net, i);
+            emotion = testANN(net, inputs);
             for idx=1:length(emotion)
                 this.Matrix(outputs(idx), emotion(idx)) = ...
                         this.Matrix(outputs(idx), emotion(idx)) + 1;
@@ -28,7 +27,8 @@ classdef confusionmatrix < handle
         % called on the parameters.
         function updateWithoutConvert(this, net, inputs, outputs)
             for col=1:size(inputs, 2),
-                emotion = testANN(net, inputs(:, col));
+                res = sim(net, inputs(:, col));
+                emotion = NNout2labels(res);
                 actualEmotion = find(outputs(:, col), 1);
                 this.Matrix(actualEmotion, emotion) = ...
                     this.Matrix(actualEmotion, emotion) + 1;
