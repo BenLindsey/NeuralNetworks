@@ -1,4 +1,10 @@
+% Use the same random seed each time the weights are initialised so results
+% are reproducible.
+clear all;
+load cleandata_students.mat;
 confusedMatrix = confusionmatrix();
+
+opti=zeros(10,4);
 
 for i=1:10,
     % Remove 10% of x to form the 9fold data
@@ -19,23 +25,25 @@ for i=1:10,
     trainOutput = foldOutput;
     trainOutput(i:10:end) = [];
     
+    % NOTE: Validatation data should probably only depend on the fold data,
+    % not the fold number (i) as well. But this shouldn't make a
+    % difference.
     validateInput = foldInput(i:10:end,:);
-    validateOutput = foldOutput(i:10:end);    
+    validateOutput = foldOutput(i:10:end);
     
-    
-    args = ga_optimise_gdm(trainInput, trainOutput, validateInput, validateOutput);
+    args = ga_optimise_gd(trainInput, trainOutput, validateInput, validateOutput);
     opti(i, :) = args;
     
+    % Setup a network with the optimum parameters.
     rng(1001, 'twister');
-    if args(5) > 0
-        net = feedforwardnet([args(1), args(2)], 'traingdm');
+    if (args(4) > 0)
+        net = feedforwardnet([args(1), args(2)], 'traingd');
     else
-        net = feedforwardnet([args(1)], 'traingdm');
+        net = feedforwardnet(args(1), 'traingd');
     end
-    [tI, tO] = ANNdata(trainInput, trainOutput);
+    [tI, tO] = ANNdata(foldInput, foldOutput);
+    net = configure(net, tI, tO);
     net.trainParam.lr = args(3);
-    net.trainParam.mc = args(4);
-    net = configure(net, tI , tO);
     
     % Train the network with the train data, stop early using the
     % validation data to prevent overfitting. But do not use the test data
@@ -47,7 +55,6 @@ for i=1:10,
     net.divideParam.trainInd = trainInd;
     net.divideParam.valInd = valInd;
     net.divideParam.testInd = [];
-    
     net = train(net, tI, tO);
 
     % Update the confusion matrix with the test data for this fold.
