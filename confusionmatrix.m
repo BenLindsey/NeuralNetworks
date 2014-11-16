@@ -26,13 +26,23 @@ classdef confusionmatrix < handle
         % Identical to update, but assumes that ANNdata has already been
         % called on the parameters.
         function updateWithoutConvert(this, net, inputs, outputs)
-            for col=1:size(inputs, 2),
-                res = sim(net, inputs(:, col));
-                emotion = NNout2labels(res);
-                actualEmotion = find(outputs(:, col), 1);
-                this.Matrix(actualEmotion, emotion) = ...
-                    this.Matrix(actualEmotion, emotion) + 1;
+            
+            res=sim(net,inputs);
+            emotion = NNout2labels(res);
+            
+            [actualEmotion, ~] = find(outputs);
+            for idx=1:length(emotion)
+                this.Matrix(actualEmotion(idx), emotion(idx)) = ...
+                     this.Matrix(actualEmotion(idx), emotion(idx)) + 1;
             end
+                
+%             for col=1:size(inputs, 2),
+%                 res = sim(net, inputs(:, col));
+%                 emotion = NNout2labels(res);
+%                 actualEmotion = find(outputs(:, col), 1);
+%                 this.Matrix(actualEmotion, emotion) = ...
+%                     this.Matrix(actualEmotion, emotion) + 1;
+%             end
         end
         
         % Functions for part III, these functions calculate the basic
