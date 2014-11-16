@@ -16,18 +16,22 @@ for i=1:10,
     testOutput = y(i:10:end);
     
     % Split the 9fold data into training and validating
-    trainInput = foldInput;
-    trainInput(i:10:end,:) = [];
+    trainingInput = foldInput;
+    trainingInput(i:10:end,:) = [];
     
-    trainOutput = foldOutput;
-    trainOutput(i:10:end) = [];
+    trainingOutput = foldOutput;
+    trainingOutput(i:10:end) = [];
     
-    validateInput = foldInput(i:10:end,:);
-    validateOutput = foldOutput(i:10:end);    
+    % NOTE: Validatation data should probably only depend on the fold data,
+    % not the fold number (i) as well. But this shouldn't make a
+    % difference.
+    validatingInput = foldInput(i:10:end,:);
+    validatingOutput = foldOutput(i:10:end);
+
+    [tI, tO] = ANNdata(trainingInput, trainingOutput);
+    [vI, vO] = ANNdata(validatingInput, validatingOutput);
     
-    [tI, tO] = ANNdata(trainInput, trainOutput);
-    
-    args = ga_optimise_gda(trainInput, trainOutput, validateInput, validateOutput);
+    args = ga_optimise_gda(tI, tO, vI, vO);
     
     opti(i, :) = args;
     
@@ -36,12 +40,25 @@ for i=1:10,
     else
         net = feedforwardnet([args(1)], 'traingda');
     end
+
+    totalInput = [tI, vI];
+    totalOutput = [tO, vO];
+    
+    net = configure(net, totalInput, totalOutput);
+    
+    net.divideFcn = 'divideind';
+    net.divideParam.trainInd = 1:size(tI, 2);
+    net.divideParam.valInd = (size(tI, 2) + 1):size(totalInput, 2);
+    net.divideParam.testInd = [];
+    
     net.trainParam.lr     = args(3);
     net.trainParam.lr_inc = args(4);
     net.trainParam.lr_dec = args(5);
-    net = configure(net, tI , tO);    
-    net = train(net, tI, tO);
-
+    
+    % Suppress output and train.
+    net.trainParam.show = NaN;
+    net = train(net, totalInput, totalOutput);
+    
     % Update the confusion matrix with the test data for this fold.
     confusedMatrix.update(net, testInput, testOutput);
 end
