@@ -1,5 +1,6 @@
 function [ fit ] = nn_fitness_gdm( args, trainingInput, trainingOutput, validatingInput, validatingOutput )
-    if args(4) > 0
+    rng(1001, 'twister');
+    if args(5) > 0
         net = feedforwardnet([args(1), args(2)], 'traingdm');
     else
         net = feedforwardnet([args(1)], 'traingdm');
@@ -27,7 +28,7 @@ function [ fit ] = nn_fitness_gdm( args, trainingInput, trainingOutput, validati
     matrix.updateWithoutConvert(net, validatingInput, validatingOutput);
     fit = 1 - matrix.getAccuracy();
 
-    if args(4) > 0
+    if args(5) > 0
         disp(['Neurons:', num2str(args(1)), '|', num2str(args(2)), ...
               ' Lr:', num2str(args(3)), ' Mc:', num2str(args(4)), ...
               ' -> ', num2str(fit)]);

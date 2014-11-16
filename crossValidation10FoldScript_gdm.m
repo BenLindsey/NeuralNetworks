@@ -1,7 +1,3 @@
-% Use the same random seed each time the weights are initialised so results
-% are reproducible.
-rng(1001, 'twister');
-
 confusedMatrix = confusionmatrix();
 
 for i=1:10,
@@ -26,18 +22,17 @@ for i=1:10,
     validateInput = foldInput(i:10:end,:);
     validateOutput = foldOutput(i:10:end);    
     
-    [tI, tO] = ANNdata(trainInput, trainOutput);
     
     args = ga_optimise_gdm(trainInput, trainOutput, validateInput, validateOutput);
-    
     opti(i, :) = args;
     
-    if args(4) > 0
+    rng(1001, 'twister');
+    if args(5) > 0
         net = feedforwardnet([args(1), args(2)], 'traingdm');
     else
         net = feedforwardnet([args(1)], 'traingdm');
     end
-    
+    [tI, tO] = ANNdata(trainInput, trainOutput);
     net.trainParam.lr = args(3);
     net.trainParam.mc = args(4);
     net = configure(net, tI , tO);

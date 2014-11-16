@@ -1,15 +1,16 @@
 function [ args ] = ga_optimise_gdm(trainingInput, trainingOutput, validatingInput, validatingOutput) 
     % OPTIMISATION ARGUMENTS:
     % [ NeuronsInFirstLayer, NeuronsInSecondLayer, LearningRate, Momentum ]
-    nargs = 4;    % Number of arguments
-    LB = [1 1 0 0];   % Lower bounds for arguments
-    UB = [100 100 1 1]; % Upper bounds for arguments
-    IC = [1, 2];  % Integer constraints (by index of OPTIMISATION ARGUMENTS)
+    nargs = 5;    % Number of arguments
+    LB = [6 6 0 0 0];   % Lower bounds for arguments
+    UB = [45 45 1 1 1]; % Upper bounds for arguments
+    IC = [1, 2, 5];  % Integer constraints (by index of OPTIMISATION ARGUMENTS)
     %options = gaoptimset; % Default options
     options = gaoptimset('UseParallel', true, ...
                          'Vectorized', 'off', ...
-                         'PopulationSize', 50, ... 
+                         'PopulationSize', 100, ...
                          'Generations', 15, ...
+                         'StallGenLimit', 5, ...
                          'PlotFcns', {@gaplotbestf, @gaplotbestindiv}); % Timelimit(seconds) constraint
                                           % ONLY checked after 1st gen.
                                          
