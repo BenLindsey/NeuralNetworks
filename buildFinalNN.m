@@ -1,19 +1,23 @@
 function [ net ] = buildFinalNN( gd_optiset, gda_optiset, gdm_optiset, rp_optiset, x, y)
-    [gdm_accuracy, gdm_params ] = findBestForTrainingFunction(gdm_optiset, 'traingdm', 5, @assign_gdm, x, y)
-    [rp_accuracy, rp_params ] = findBestForTrainingFunction(rp_optiset, 'trainrp', 5, @assign_rp, x, y)
-    [gd_accuracy, gd_params ] = findBestForTrainingFunction(gd_optiset, 'traingd', 4, @assign_gd, x, y)
-    [gda_accuracy, gda_params ] = findBestForTrainingFunction(gda_optiset, 'traingda', 6, @assign_gda, x, y)
+    [gdm_accuracy, gdm_params ] = findBestForTrainingFunction(gdm_optiset, 'traingdm', 5, @assign_gdm, x, y);
+    [rp_accuracy, rp_params ] = findBestForTrainingFunction(rp_optiset, 'trainrp', 5, @assign_rp, x, y);
+    [gd_accuracy, gd_params ] = findBestForTrainingFunction(gd_optiset, 'traingd', 4, @assign_gd, x, y);
+    [gda_accuracy, gda_params ] = findBestForTrainingFunction(gda_optiset, 'traingda', 6, @assign_gda, x, y);
     
-    scores = [gda_accuracy, gdm_accuracy, rp_accuracy, gd_accuracy];
-    best = max(scores(:));
+    scores = [gd_accuracy, gda_accuracy, gdm_accuracy, rp_accuracy]
+    best = max(scores(:))
     
     if best == gda_accuracy
+        disp(['Training with gda ', mat2str(gda_params)]);
     	net = buildNet(1, x, y, gda_params, 6, 'traingda', @assign_gda);
     elseif best == gdm_accuracy
+        disp(['Training with gdm ', mat2str(gdm_params)])
         net = buildNet(1, x, y, gdm_params, 5, 'traingdm', @assign_gdm);
     elseif best == rp_accuracy
+        disp(['Training with rp ', mat2str(rp_params)])
         net = buildNet(1, x, y, rp_params, 5, 'trainrp', @assign_rp);
     else
+        disp(['Training with gd ', mat2str(gd_params)])
         net = buildNet(1, x, y, gd_params, 4, 'traingd', @assign_gd);
     end
 end
@@ -100,6 +104,8 @@ function [ max_accuracy, max_inputs ] = findBestForTrainingFunction( optiset, fu
             confusedMatrix.update(net, testInput, testOutput);
         end
 
+        disp([functionName, ' ', mat2str(optiset(j, :)), '->', num2str(confusedMatrix.getAccuracy())]);
+        
         results(j) = confusedMatrix.getAccuracy();
     end
 
