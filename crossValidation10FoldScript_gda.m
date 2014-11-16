@@ -1,6 +1,3 @@
-resultB=zeros(floor(length(y)/10),10);
-resultD=zeros(floor(length(y)/10),10);
-
 confusedMatrix = confusionmatrix();
 
 for i=1:10,
@@ -27,28 +24,24 @@ for i=1:10,
     % difference.
     validatingInput = foldInput(i:10:end,:);
     validatingOutput = foldOutput(i:10:end);
-
-    [tI, tO] = ANNdata(trainingInput, trainingOutput);
-    [vI, vO] = ANNdata(validatingInput, validatingOutput);
     
-    args = ga_optimise_gda(tI, tO, vI, vO);
-    
+    args = ga_optimise_gda(trainingInput, trainingOutput, validatingInput, validatingOutput);
     opti(i, :) = args;
     
+    rng(1001, 'twister');
     if args(6) > 0
         net = feedforwardnet([args(1), args(2)], 'traingda');
     else
         net = feedforwardnet([args(1)], 'traingda');
     end
-
-    totalInput = [tI, vI];
-    totalOutput = [tO, vO];
-    
-    net = configure(net, totalInput, totalOutput);
-    
+    [tI, tO] = ANNdata(foldInput, foldOutput);
+    valInd = i:10:size(tI, 2);
+    trainInd = (1:size(tI, 2));
+    trainInd(valInd) = [];
+    net = configure(net, tI, tO);
     net.divideFcn = 'divideind';
-    net.divideParam.trainInd = 1:size(tI, 2);
-    net.divideParam.valInd = (size(tI, 2) + 1):size(totalInput, 2);
+    net.divideParam.trainInd = trainInd;
+    net.divideParam.valInd = valInd;
     net.divideParam.testInd = [];
     
     net.trainParam.lr     = args(3);
@@ -57,11 +50,14 @@ for i=1:10,
     
     % Suppress output and train.
     net.trainParam.show = NaN;
-    net = train(net, totalInput, totalOutput);
+    net = train(net, tI, tO);
     
     % Update the confusion matrix with the test data for this fold.
     confusedMatrix.update(net, testInput, testOutput);
 end
+
+fprintf('Optimum parameters:\n');
+disp(opti);
 
 % Get the average statistics from the confusion matrix.
 recallRates = zeros(1, 6);
