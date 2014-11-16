@@ -1,4 +1,5 @@
 function fit = nn_fitness_rp( args, trainingInput, trainingOutput, validatingInput, validatingOutput )
+    rng(1001, 'twister');
     if args(5) > 0
         net = feedforwardnet([args(1), args(2)], 'trainrp');
     else

@@ -1,6 +1,5 @@
 % Use the same random seed each time the weights are initialised so results
 % are reproducible.
-rng(1001, 'twister');
 
 confusedMatrix = confusionmatrix();
 
@@ -33,6 +32,7 @@ for i=1:10,
     opti(i, :) = args;
     
     % Setup a network with the optimum parameters.
+    rng(1001, 'twister');
     if (args(5) > 0)
         net = feedforwardnet([args(1), args(2)], 'trainrp');
     else
