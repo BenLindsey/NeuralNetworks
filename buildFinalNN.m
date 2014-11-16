@@ -104,7 +104,7 @@ function [ max_accuracy, max_inputs ] = findBestForTrainingFunction( optiset, fu
             confusedMatrix.update(net, testInput, testOutput);
         end
 
-        disp([functionName, ' ', mat2str(optiset(j, :)), '->', num2str(confusedMatrix.getAccuracy())]);
+        disp([functionName, ' ', mat2str(optiset(j, :)), ' -> ', num2str(confusedMatrix.getAccuracy())]);
         
         results(j) = confusedMatrix.getAccuracy();
     end
