@@ -3,7 +3,7 @@ function args = ga_optimise_rp(trainingInput, trainingOutput, validatingInput, v
     % [ NeuronsInFirstLayer, NeuronsInSecondLayer, delta_inc, delta_dec, UseSecondLayer ]
     nargs = 5;           % Number of arguments
     LB = [6,   6,   1, 0, 0]; % Lower bounds for arguments
-    UB = [145, 45, 2, 1, 1]; % Upper bounds for arguments
+    UB = [45, 45, 2, 1, 1]; % Upper bounds for arguments
     IC = [1, 2, 5];  % Integer constraints (by index of OPTIMISATION ARGUMENTS)
     %options = gaoptimset; % Default options
     options = gaoptimset('UseParallel', true, ...
