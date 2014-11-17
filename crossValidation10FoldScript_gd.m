@@ -90,3 +90,5 @@ disp(f1Scores);
 
 fprintf('Average accuracy:     ');
 disp(accuracy);
+
+save('optiGD.mat','opti');

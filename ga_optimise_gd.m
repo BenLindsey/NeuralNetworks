@@ -2,8 +2,8 @@ function args = ga_optimise_gd(trainingInput, trainingOutput, validatingInput, v
     % OPTIMISATION ARGUMENTS:
     % [ NeuronsInFirstLayer, NeuronsInSecondLayer, delta_inc, delta_dec, UseSecondLayer ]
     nargs = 4;           % Number of arguments
-    LB = [6, 45, 0, 0]; % Lower bounds for arguments
-    UB = [6, 45, 1, 1]; % Upper bounds for arguments
+    LB = [6, 6, 0, 0]; % Lower bounds for arguments
+    UB = [45, 45, 1, 1]; % Upper bounds for arguments
     IC = [1, 2, 4];  % Integer constraints (by index of OPTIMISATION ARGUMENTS)
     %options = gaoptimset; % Default options
     options = gaoptimset('UseParallel', true, ...
